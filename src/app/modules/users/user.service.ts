@@ -11,21 +11,28 @@ const getAllUsersFromDB = async () => {
   return result;
 };
 
-const getSingleUsersFromDB = async (userId: string) => {
+const getSingleUsersFromDB = async (userId: number) => {
   const result = await UserModel.findOne({ userId });
   return result;
 };
 
-const updateuser = async (userId: string, userData: User) => {
-  const result = await UserModel.findByIdAndUpdate(userId, userData, {
-    new: true,
-    runValidators: true,
-  });
+// const updateuser = async (userId: number, userData: User) => {
+//   const result = await UserModel.findByIdAndUpdate(userId, userData, {
+//     new: true,
+//   });
+//   return result;
+// };
+const updateuser = async (userId: number, userData: User) => {
+  const result = await UserModel.findOneAndUpdate(
+    { userId },
+    userData,
+    { new: true }
+  );
   return result;
 };
 
-const deleteUser = async (userId: string) => {
-  const result = await UserModel.findByIdAndUpdate(userId);
+const deleteUser = async (userId: number) => {
+  const result = await UserModel.findOneAndDelete({ userId });
   return result;
 };
 
