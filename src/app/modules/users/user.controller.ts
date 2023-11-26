@@ -1,12 +1,16 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
+// import userValidationSchema from './user.validaton';
 // import { Response } from 'express';
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user: userData } = req.body;
+    const  user = req.body;
 
-    const result = await UserServices.createStudentIntoDB(userData);
+
+    // const zodparsedData = userValidationSchema.parse(userData)
+
+    const result = await UserServices.createStudentIntoDB(user);
 
     res.status(200).json({
       success: true,
@@ -70,10 +74,11 @@ const updateUser = async (req: Request, res: Response) => {
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    await UserServices.deleteUser(userId);
+    const result = await UserServices.deleteUser(userId);
     res.status(200).json({
       status: 'success',
       message: 'User deleted successfully',
+      data:result
     });
   } catch (error: any) {
     console.log(error);
