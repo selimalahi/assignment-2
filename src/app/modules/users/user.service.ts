@@ -3,7 +3,18 @@ import { UserModel } from './user.model';
 
 const createStudentIntoDB = async (user: User) => {
   const result = await UserModel.create(user);
-  const result2 = await UserModel.findOne({ userId: result.userId }, { username: 1, fullName: 1, age: 1, email: 1,isActive:1,hobbies: 1,address: 1 });
+  const result2 = await UserModel.findOne(
+    { userId: result.userId },
+    {
+      username: 1,
+      fullName: 1,
+      age: 1,
+      email: 1,
+      isActive: 1,
+      hobbies: 1,
+      address: 1,
+    },
+  );
   return result2;
 };
 
@@ -20,6 +31,17 @@ const getSingleUsersFromDB = async (userId: number) => {
     { userId },
     { username: 1, fullName: 1, age: 1, email: 1, address: 1 },
   );
+  
+  if (!result) {
+    throw {
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
+    };
+  }
   return result;
 };
 
@@ -31,7 +53,8 @@ const getSingleUsersFromDB = async (userId: number) => {
 // };
 const updateuser = async (userId: number, userData: User) => {
   const result = await UserModel.findOneAndUpdate({ userId }, userData, {
-    new: true,
+    new: true,    
+    runValidators: true,
   });
   return result;
 };
@@ -43,24 +66,23 @@ const updateuser = async (userId: number, userData: User) => {
 //       const nameKey = `name${key}`;
 //       (updatedUserData as any)[nameKey] = fullName[key as keyof typeof fullName];
 //     });
-//   } 
+//   }
 //   if (address && Object.keys(address).length > 0) {
 //     Object.keys(address).forEach((key) => {
 //       const nameKey = `name${key}`;
 //       (updatedUserData as any)[nameKey] = address[key as keyof typeof address];
 //     });
-//   } 
-
+//   }
 
 const deleteUser = async (userId: number) => {
-   await UserModel.findOneAndDelete({ userId });
+  await UserModel.findOneAndDelete({ userId });
   return null;
 
   // if(!isExists){
   //   throw new Error(
   //     "user not exits"
   //   );
-    
+
   // }
 };
 

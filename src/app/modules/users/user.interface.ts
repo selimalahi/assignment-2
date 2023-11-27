@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export type UserFullName = {
   firstName: string;
   lastName: string;
@@ -29,3 +31,9 @@ export type User = {
   address: UserAddress;
   orders?: UserOrders;
 };
+
+export type UserMethods = {
+  isUserExists(userId: number): Promise<User | null>;
+};
+
+export type UserModels = Model<User, Record<string, never>, UserMethods>;

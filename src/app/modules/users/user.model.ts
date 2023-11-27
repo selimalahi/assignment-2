@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
-import { User, UserAddress, UserFullName, UserOrders } from './user.interface';
-
+import { User, UserAddress, UserFullName, UserMethods, UserModels, UserOrders } from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
+// import { config } from 'dotenv';
 const userFullnameSchema = new Schema<UserFullName>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
@@ -18,7 +21,7 @@ const userOrderSchema = new Schema<UserOrders>([{
   quantity: { type: Number, required: true },
 }]);
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema<User, UserModels, UserMethods>({
   userId: {
     type: Number,
     unique: true,
@@ -46,4 +49,24 @@ const userSchema = new Schema<User>({
   },
 });
 
-export const UserModel = model<User>('User', userSchema);
+
+userSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(user.password,Number(config.bcrypt_salt_rounds));
+  next();
+    
+})
+
+
+userSchema.post('save', function (doc, next) {
+  doc.password= ''
+  next();
+})
+
+
+userSchema.methods.isUserExists = async function(userId: number){
+  const existingUser = await UserModel.findOne({userId})
+  return existingUser;
+}
+
+export const UserModel = model<User, UserModels>('User', userSchema);
