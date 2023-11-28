@@ -45,7 +45,8 @@ const userSchema = new Schema<User, UserModels, UserMethods>({
     required: true,
   },
   orders:{
-    type:[ userOrderSchema]
+    type:[ userOrderSchema],
+    default: []
   },
 });
 
@@ -56,8 +57,6 @@ userSchema.pre('save', async function (next) {
   next();
     
 })
-
-
 userSchema.post('save', function (doc, next) {
   doc.password= ''
   next();

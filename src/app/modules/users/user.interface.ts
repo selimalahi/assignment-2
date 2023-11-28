@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Model } from "mongoose";
 
 export type UserFullName = {
@@ -11,13 +12,18 @@ export type UserAddress = {
   country: string;
 };
 
-export type UserOrders = [
-  {
-    productName: string;
-    price: number;
-    quantity: number;
-  },
-];
+// export type UserOrders = [
+//   {
+//     productName: string;
+//     price: number;
+//     quantity: number;
+//   },
+// ];
+export type UserOrders = {
+  productName: string;
+  price: number;
+  quantity: number;
+}[];
 
 export type User = {
   userId: number;
@@ -29,7 +35,8 @@ export type User = {
   isActive: boolean;
   hobbies: string[];
   address: UserAddress;
-  orders?: UserOrders;
+  // orders?: UserOrders;
+  orders: UserOrders;
 };
 
 export type UserMethods = {

@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { User } from './user.interface';
 import { UserModel } from './user.model';
 
@@ -27,69 +28,71 @@ const getAllUsersFromDB = async () => {
 };
 
 const getSingleUsersFromDB = async (userId: number) => {
+  const user = new UserModel();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User not found');
+  }
+
   const result = await UserModel.findOne(
     { userId },
     { username: 1, fullName: 1, age: 1, email: 1, address: 1 },
-  );
-  
-  if (!result) {
-    throw {
-      success: false,
-      message: 'User not found',
-      error: {
-        code: 404,
-        description: 'User not found!',
-      },
-    };
-  }
+  ); 
   return result;
 };
 
-// const updateuser = async (userId: number, userData: User) => {
-//   const result = await UserModel.findByIdAndUpdate(userId, userData, {
-//     new: true,
-//   });
-//   return result;
-// };
+
 const updateuser = async (userId: number, userData: User) => {
+  const user = new UserModel();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User not found');
+  }
+
   const result = await UserModel.findOneAndUpdate({ userId }, userData, {
-    new: true,    
+    new: true,
     runValidators: true,
   });
   return result;
 };
-
-// const { fullName, address, ...updateData } = userData;
-//   const updatedUserData: Partial<User> = { ...updateData };
-//   if (fullName && Object.keys(fullName).length > 0) {
-//     Object.keys(fullName).forEach((key) => {
-//       const nameKey = `name${key}`;
-//       (updatedUserData as any)[nameKey] = fullName[key as keyof typeof fullName];
-//     });
-//   }
-//   if (address && Object.keys(address).length > 0) {
-//     Object.keys(address).forEach((key) => {
-//       const nameKey = `name${key}`;
-//       (updatedUserData as any)[nameKey] = address[key as keyof typeof address];
-//     });
-//   }
-
 const deleteUser = async (userId: number) => {
+  const user = new UserModel();
+  if (!(await user.isUserExists(userId))) {
+    throw new Error('User not found');
+  }
   await UserModel.findOneAndDelete({ userId });
-  return null;
-
-  // if(!isExists){
-  //   throw new Error(
-  //     "user not exits"
-  //   );
-
-  // }
+  return null;  
 };
 
+
+
+const addProductToOrder = async (userId: number, orderData: { productName: string; price: number; quantity: number }) => {
+  try {
+    const user = await UserModel.findOne({ userId });
+
+    if (!user) {
+      throw new Error('User not found');
+    }    
+    if (!user.orders) {
+      user.orders = [];
+    }
+
+    user.orders.push({
+      productName: orderData.productName,
+      price: orderData.price,
+      quantity: orderData.quantity,
+    });
+
+    await user.save();
+
+    return null; 
+  } catch (error) {
+    throw error;
+  }
+};
 export const UserServices = {
   createStudentIntoDB,
   getAllUsersFromDB,
   getSingleUsersFromDB,
   updateuser,
   deleteUser,
+  addProductToOrder,
 };

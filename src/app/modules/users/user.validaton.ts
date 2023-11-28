@@ -14,11 +14,11 @@ const userAddressValidationSchema = z.object({
 });
 
 // Define Zod schema for UserOrder
-// const userOrderValidationSchema = z.object({
+// const userOrderValidationSchema = z.object([{
 //   productName: z.string(),
 //   price: z.number(),
 //   quantity: z.number(),
-// });
+// }]);
 
 // Define Zod schema for User
 const userValidationSchema = z.object({
@@ -56,37 +56,3 @@ export default userValidationSchema;
 
 
 
-
-// import Joi from 'joi';
-
-// const userFullNameSchema = Joi.object({
-//   firstName: Joi.string().required(),
-//   lastName: Joi.string().required(),
-// });
-
-// const userAddressSchema = Joi.object({
-//   street: Joi.string(),
-//   city: Joi.string(),
-//   country: Joi.string(),
-// });
-
-// const userOrderSchema = Joi.object({
-//   productName: Joi.string().required(),
-//   price: Joi.number().required(),
-//   quantity: Joi.number().required(),
-// });
-
-// const userValidetionSchema = Joi.object({
-//   userId: Joi.number().required(),
-//   username: Joi.string().required(),
-//   password: Joi.string().required(),
-//   fullName: userFullNameSchema,
-//   age: Joi.number(),
-//   email: Joi.string().required(),
-//   isActive: Joi.boolean(),
-//   hobbies: Joi.array().items(Joi.string()),
-//   address: userAddressSchema.required(),
-//   orders: Joi.array().items(userOrderSchema),
-// });
-
-// export default userValidetionSchema;

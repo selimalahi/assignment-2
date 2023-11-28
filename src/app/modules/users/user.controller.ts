@@ -51,8 +51,12 @@ const getSingleUsers = async (req: Request, res: Response) => {
   } catch (err: any) {
     res.status(404).json({
       success: false,
-      message: err.message ||" something Went wrong",
-    })
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
+    });
   }
 };
 
@@ -69,10 +73,14 @@ const updateUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error: any) {
-    console.log(error);
+    
     res.status(500).json({
-      status: 'fail',
-      message: error.message || 'Something went wrong',
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
   }
 };
@@ -87,12 +95,51 @@ const deleteUser = async (req: Request, res: Response) => {
       message: 'User deleted successfully',
       data: result,
     });
-  } catch (error: any) {
-    console.log(error);
+  } catch (error: any) {    
     res.status(500).json({
-      status: 'fail',
-      message: error.message || 'Something went wrong',
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: 'User not found!',
+      },
     });
+  }
+};
+
+
+
+
+const addProductToOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const numericUserId = parseInt(userId, 10);
+    const orderData = req.body;
+
+    await UserServices.addProductToOrder(numericUserId, orderData);
+
+    res.status(200).json({
+      success: true,
+      message: 'Order created successfully!',
+      data: null,
+    });
+  } catch (error: any) {
+    if (error instanceof Error && error.message === 'User not found') {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong',
+        error: error.message,
+      });
+    }
   }
 };
 
@@ -102,4 +149,5 @@ export const UserControllers = {
   getSingleUsers,
   updateUser,
   deleteUser,
+  addProductToOrder
 };
