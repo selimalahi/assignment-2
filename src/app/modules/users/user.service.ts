@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-catch */
 import { User } from './user.interface';
 import { UserModel } from './user.model';
@@ -106,55 +107,50 @@ const addProductToOrder = async (
 //   return orders;
 // };
 
-
 export const getUserOrders = async (userId: number) => {
   try {
     const user = await UserModel.findOne({ userId });
-    
     if (user) {
-      const orders = user.orders;
-      return orders;
-    } 
-    
+      const existingUser = await user.isUserExists(userId);
+
+      if (existingUser) {
+        const orders = existingUser.orders;
+        return orders;
+      }
+    } else {
+      const error = new Error('User not found');
+      (error as any).code = 404;
+      throw error;
+    }
   } catch (error) {
     throw new Error('Error fetching user orders');
   }
 };
 
-
 // Calculate Total Price of Orders for a Specific User
 
-const  getToatalPriceOforders = async (userId: number) =>{
-  const user = await UserModel.findOne({userId});
-
-  if(!user){
+const getToatalPriceOforders = async (userId: number) => {
+  try{
+    const user = await UserModel.findOne({ userId });
+  if (user) {
+    const existingUser = await user.isUserExists(userId);
+    if (existingUser) {      
+      const TotalPrice =
+        existingUser.orders?.reduce(
+          (sum, order) => sum + order.price * order.quantity,
+          0,
+        ) || 0;
+      return TotalPrice;
+    }
+  }else {
+    const error = new Error('User not found');
+    (error as any).code = 404;
+    throw error;
+  }
+  }catch(error){
     throw new Error('User Not Found');
-  };
-
-  const TotalPrice = user.orders?.reduce((sum, order) =>  sum + order.price * order.quantity, 0 ) || 0;
-  return TotalPrice;
-}
-
-
-
-
-
-// const getAllOrdersForUser = async (userId: number) => {
-//   const user = await UserModel.findOne({ userId });
-
-//   if (!user) {
-//     throw {
-//       success: false,
-//       message: 'User not found',
-//       error: {
-//         code: 404,
-//         description: 'User not found!',
-//       },
-//     };
-//   }
-
-//   return user.orders || [];
-// };
+  }
+};
 
 export const UserServices = {
   createStudentIntoDB,
