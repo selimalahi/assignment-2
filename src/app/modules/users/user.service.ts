@@ -53,6 +53,7 @@ const updateuser = async (userId: number, userData: User) => {
   });
   return result;
 };
+
 const deleteUser = async (userId: number) => {
   const user = new UserModel();
   if (!(await user.isUserExists(userId))) {
@@ -89,24 +90,6 @@ const addProductToOrder = async (
   }
 };
 
-// const getAllOrdersForUser = async (userId: number) => {
-//   const user = new UserModel();
-//   const existingUser = await user.isUserExists(userId);
-
-//   if (!existingUser) {
-//     throw {
-//       success: false,
-//       message: 'User not found',
-//       error: {
-//         code: 404,
-//         description: 'User not found!',
-//       },
-//     };
-//   }
-//   const orders = existingUser.orders || [];
-//   return orders;
-// };
-
 export const getUserOrders = async (userId: number) => {
   try {
     const user = await UserModel.findOne({ userId });
@@ -115,9 +98,16 @@ export const getUserOrders = async (userId: number) => {
 
       if (existingUser) {
         const orders = existingUser.orders;
-        return orders;
+        // return orders;
+
+        if(orders && orders.length > 0){
+          return orders;
+        }else{
+          return [];
+        }
       }
-    } else {
+    }    
+    else {
       const error = new Error('User not found');
       (error as any).code = 404;
       throw error;
@@ -132,6 +122,7 @@ export const getUserOrders = async (userId: number) => {
 const getToatalPriceOforders = async (userId: number) => {
   try{
     const user = await UserModel.findOne({ userId });
+   
   if (user) {
     const existingUser = await user.isUserExists(userId);
     if (existingUser) {      

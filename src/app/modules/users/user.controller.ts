@@ -64,8 +64,8 @@ const updateUser = async (req: Request, res: Response) => {
     const userData = req.body;
     const { userId } = req.params;
     const numericUserId = parseInt(userId, 10);
-    // const validatedData = userValidationSchema.parse(userData);
-    const result = await UserServices.updateuser(numericUserId, userData);
+     const validatedData = userValidationSchema.parse(userData);
+    const result = await UserServices.updateuser(numericUserId, validatedData);
     res.status(200).json({
       status: 'success',
       message: 'User updated successfully',
@@ -138,28 +138,7 @@ const addProductToOrder = async (req: Request, res: Response) => {
   }
 };
 
-// const getAllOrdersForUser = async (req: Request, res: Response) => {
-//   try {
-//     const { userId } = req.params;
-//     const numericUserId = parseInt(userId, 10);
-//     const orders = await UserServices.getAllOrdersForUser(numericUserId);
-//     console.log(orders);
 
-//     res.status(200).json({
-//       success: true,
-//       message: 'Order fetched successfully!',
-//       data: {
-//         orders,
-//       },
-//     });
-//   } catch (error: any) {
-//     res.status(error.code || 500).json({
-//       success: false,
-//       message: error.message || 'Something went wrong',
-//       error: error.error || {},
-//     });
-//   }
-// };
 
 export const getUserOrders = async (req: Request, res: Response) => {
   try {
@@ -167,24 +146,14 @@ export const getUserOrders = async (req: Request, res: Response) => {
     const numericUserId = parseInt(userId, 10);
     const orders = await UserServices.getUserOrders(numericUserId);
 
-    if (orders) {
+    if (orders !== undefined) {
       res.json({
         success: true,
         message: 'Order fetched successfully!',
         data: { orders },
       });
     } 
-    // if (orders === null) {
-      
-    //         throw {
-    //           success: false,
-    //           message: 'User not found',
-    //           error: {
-    //             code: 404,
-    //             description: 'User not found!',
-    //           },
-    //         };
-    //       }
+    
   } catch (error) {
     res.status(500).json({
         success: false,
