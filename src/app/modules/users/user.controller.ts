@@ -33,7 +33,11 @@ const getAllUsers = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: 'something went wrong',
+      error: err,
+    });
   }
 };
 
@@ -188,32 +192,7 @@ const  getTotalOrdersPrice = async (req: Request, res: Response) =>{
       }
     })
   }
-}
-
-// const getAllOrdersForUser = async (req: Request, res: Response) => {
-//   try {
-//     const { userId } = req.params;
-//     const numericUserId = parseInt(userId, 10);
-
-//     const orders = await UserServices.getAllOrdersForUser(numericUserId);
-//     console.log('Orders:', orders); // Log orders
-
-//     res.status(200).json({
-//       success: true,
-//       message: 'Order fetched successfully!',
-//       data: {
-//         orders,
-//       },
-//     });
-//   } catch (error: any) {
-//     console.error('Error:', error); // Log the error
-//     res.status(error.code || 500).json({
-//       success: false,
-//       message: error.message || 'Something went wrong',
-//       error: error.error || {},
-//     });
-//   }
-// };
+};
 
 export const UserControllers = {
   createUser,
@@ -221,8 +200,7 @@ export const UserControllers = {
   getSingleUsers,
   updateUser,
   deleteUser,
-  addProductToOrder,
-  // getAllOrdersForUser,
+  addProductToOrder,  
   getUserOrders,
   getTotalOrdersPrice,
 };

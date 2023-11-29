@@ -12,19 +12,6 @@ export type UserAddress = {
   country: string;
 };
 
-// export type UserOrders = [
-//   {
-//     productName: string;
-//     price: number;
-//     quantity: number;
-//   },
-// ];
-// export type UserOrders = {
-//   productName: string;
-//   price: number;
-//   quantity: number;
-// }[];
-
 export type UserOrderItem = {
   productName: string;
   price: number;
@@ -40,8 +27,7 @@ export type User = {
   email: string;
   isActive: boolean;
   hobbies: string[];
-  address: UserAddress;
-  // orders?: UserOrders;
+  address: UserAddress;  
   orders?: UserOrderItem[];
 };
 

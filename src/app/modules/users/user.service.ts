@@ -97,8 +97,7 @@ export const getUserOrders = async (userId: number) => {
       const existingUser = await user.isUserExists(userId);
 
       if (existingUser) {
-        const orders = existingUser.orders;
-        // return orders;
+        const orders = existingUser.orders;      
 
         if(orders && orders.length > 0){
           return orders;
@@ -117,7 +116,7 @@ export const getUserOrders = async (userId: number) => {
   }
 };
 
-// Calculate Total Price of Orders for a Specific User
+
 
 const getToatalPriceOforders = async (userId: number) => {
   try{

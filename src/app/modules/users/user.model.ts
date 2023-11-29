@@ -45,7 +45,7 @@ const userSchema = new Schema<User, UserModels, UserMethods>({
   },
   orders:{
     type:[ userOrderSchema],
-    // default: []
+    
   },
 });
 
@@ -65,9 +65,6 @@ userSchema.post('save', function (doc, next) {
 userSchema.methods.isUserExists = async function(userId: number){
   const existingUser = await UserModel.findOne({userId})
   return existingUser;
-}
-
-// custom static method for get all orders for single user
-
+};
 
 export const UserModel = model<User, UserModels>('User', userSchema);
