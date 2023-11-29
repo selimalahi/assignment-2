@@ -1,5 +1,6 @@
 import express from 'express'
 import { UserControllers } from './user.controller'
+// import { getUserOrders } from './user.service';
 const router = express.Router()
 
 router.post('/', UserControllers.createUser);
@@ -10,5 +11,7 @@ router.get('/:userId', UserControllers.getSingleUsers)
 router.put('/:userId', UserControllers.updateUser)
 router.delete('/:userId', UserControllers.deleteUser)
 router.put('/:userId/orders', UserControllers.addProductToOrder);
+// router.get('/:userId/orders', UserControllers.addProductToOrder);
+router.get('/:userId/orders', UserControllers.getUserOrders);
 
 export const UserRouters = router;

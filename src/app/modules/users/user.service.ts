@@ -35,11 +35,10 @@ const getSingleUsersFromDB = async (userId: number) => {
 
   const result = await UserModel.findOne(
     { userId },
-    { username: 1, fullName: 1, age: 1, email: 1, address: 1 },
-  ); 
+    { username: 1, fullName: 1, age: 1, email: 1, address: 1, orders: 1 },
+  );
   return result;
 };
-
 
 const updateuser = async (userId: number, userData: User) => {
   const user = new UserModel();
@@ -59,22 +58,22 @@ const deleteUser = async (userId: number) => {
     throw new Error('User not found');
   }
   await UserModel.findOneAndDelete({ userId });
-  return null;  
+  return null;
 };
 
-
-
-const addProductToOrder = async (userId: number, orderData: { productName: string; price: number; quantity: number }) => {
+const addProductToOrder = async (
+  userId: number,
+  orderData: { productName: string; price: number; quantity: number },
+) => {
   try {
     const user = await UserModel.findOne({ userId });
 
     if (!user) {
       throw new Error('User not found');
-    }    
+    }
     if (!user.orders) {
       user.orders = [];
     }
-
     user.orders.push({
       productName: orderData.productName,
       price: orderData.price,
@@ -83,11 +82,80 @@ const addProductToOrder = async (userId: number, orderData: { productName: strin
 
     await user.save();
 
-    return null; 
+    return null;
   } catch (error) {
     throw error;
   }
 };
+
+// const getAllOrdersForUser = async (userId: number) => {
+//   const user = new UserModel();
+//   const existingUser = await user.isUserExists(userId);
+
+//   if (!existingUser) {
+//     throw {
+//       success: false,
+//       message: 'User not found',
+//       error: {
+//         code: 404,
+//         description: 'User not found!',
+//       },
+//     };
+//   }
+//   const orders = existingUser.orders || [];
+//   return orders;
+// };
+
+
+export const getUserOrders = async (userId: number) => {
+  try {
+    const user = await UserModel.findOne({ userId });
+    
+    if (user) {
+      const orders = user.orders;
+      return orders;
+    } 
+    
+  } catch (error) {
+    throw new Error('Error fetching user orders');
+  }
+};
+
+
+// Calculate Total Price of Orders for a Specific User
+
+const  getToatalPriceOforders = async (userId: number) =>{
+  const user = await UserModel.findOne({userId});
+
+  if(!user){
+    throw new Error('User Not Found');
+  };
+
+  const TotalPrice = user.orders?.reduce((sum, order) =>  sum + order.price * order.quantity, 0 ) || 0;
+  return TotalPrice;
+}
+
+
+
+
+
+// const getAllOrdersForUser = async (userId: number) => {
+//   const user = await UserModel.findOne({ userId });
+
+//   if (!user) {
+//     throw {
+//       success: false,
+//       message: 'User not found',
+//       error: {
+//         code: 404,
+//         description: 'User not found!',
+//       },
+//     };
+//   }
+
+//   return user.orders || [];
+// };
+
 export const UserServices = {
   createStudentIntoDB,
   getAllUsersFromDB,
@@ -95,4 +163,6 @@ export const UserServices = {
   updateuser,
   deleteUser,
   addProductToOrder,
+  getUserOrders,
+  getToatalPriceOforders,
 };

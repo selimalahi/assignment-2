@@ -3,7 +3,6 @@ import { Schema, model } from 'mongoose';
 import { User, UserAddress, UserFullName, UserMethods, UserModels, UserOrders } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
-// import { config } from 'dotenv';
 const userFullnameSchema = new Schema<UserFullName>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
@@ -46,7 +45,7 @@ const userSchema = new Schema<User, UserModels, UserMethods>({
   },
   orders:{
     type:[ userOrderSchema],
-    default: []
+    // default: []
   },
 });
 
@@ -62,10 +61,13 @@ userSchema.post('save', function (doc, next) {
   next();
 })
 
-
+// custom inastance method 
 userSchema.methods.isUserExists = async function(userId: number){
   const existingUser = await UserModel.findOne({userId})
   return existingUser;
 }
+
+// custom static method for get all orders for single user
+
 
 export const UserModel = model<User, UserModels>('User', userSchema);

@@ -42,7 +42,6 @@ const getSingleUsers = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const numericUserId = parseInt(userId, 10);
     const result = await UserServices.getSingleUsersFromDB(numericUserId);
-
     res.status(200).json({
       success: true,
       message: ' Retrieve a specific user by ID',
@@ -73,7 +72,6 @@ const updateUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error: any) {
-    
     res.status(500).json({
       success: false,
       message: 'User not found',
@@ -95,7 +93,7 @@ const deleteUser = async (req: Request, res: Response) => {
       message: 'User deleted successfully',
       data: result,
     });
-  } catch (error: any) {    
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: 'User not found',
@@ -106,9 +104,6 @@ const deleteUser = async (req: Request, res: Response) => {
     });
   }
 };
-
-
-
 
 const addProductToOrder = async (req: Request, res: Response) => {
   try {
@@ -143,11 +138,106 @@ const addProductToOrder = async (req: Request, res: Response) => {
   }
 };
 
+// const getAllOrdersForUser = async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.params;
+//     const numericUserId = parseInt(userId, 10);
+//     const orders = await UserServices.getAllOrdersForUser(numericUserId);
+//     console.log(orders);
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Order fetched successfully!',
+//       data: {
+//         orders,
+//       },
+//     });
+//   } catch (error: any) {
+//     res.status(error.code || 500).json({
+//       success: false,
+//       message: error.message || 'Something went wrong',
+//       error: error.error || {},
+//     });
+//   }
+// };
+
+export const getUserOrders = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const numericUserId = parseInt(userId, 10);
+    const orders = await UserServices.getUserOrders(numericUserId);
+
+    if (orders) {
+      res.json({
+        success: true,
+        message: 'Order fetched successfully!',
+        data: { orders },
+      });
+    } 
+    // if (orders === null) {
+      
+    //         throw {
+    //           success: false,
+    //           message: 'User not found',
+    //           error: {
+    //             code: 404,
+    //             description: 'User not found!',
+    //           },
+    //         };
+    //       }
+  } catch (error) {
+    res.status(500).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+        });
+  }
+};
+
+const  getTotalOrdersPrice = async (req: Request, res: Response) =>{
+  try{
+    const {userId} = req.params;
+    const numericUserId = parseInt(userId, 10);
+    const totalPrice = await UserServices.getToatalPriceOforders(numericUserId);
+    res.status(200)
+  }
+}
+
+// const getAllOrdersForUser = async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.params;
+//     const numericUserId = parseInt(userId, 10);
+
+//     const orders = await UserServices.getAllOrdersForUser(numericUserId);
+//     console.log('Orders:', orders); // Log orders
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Order fetched successfully!',
+//       data: {
+//         orders,
+//       },
+//     });
+//   } catch (error: any) {
+//     console.error('Error:', error); // Log the error
+//     res.status(error.code || 500).json({
+//       success: false,
+//       message: error.message || 'Something went wrong',
+//       error: error.error || {},
+//     });
+//   }
+// };
+
 export const UserControllers = {
   createUser,
   getAllUsers,
   getSingleUsers,
   updateUser,
   deleteUser,
-  addProductToOrder
+  addProductToOrder,
+  // getAllOrdersForUser,
+  getUserOrders,
 };

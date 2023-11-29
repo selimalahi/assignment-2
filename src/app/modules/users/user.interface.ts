@@ -19,11 +19,17 @@ export type UserAddress = {
 //     quantity: number;
 //   },
 // ];
-export type UserOrders = {
+// export type UserOrders = {
+//   productName: string;
+//   price: number;
+//   quantity: number;
+// }[];
+
+export type UserOrderItem = {
   productName: string;
   price: number;
   quantity: number;
-}[];
+};
 
 export type User = {
   userId: number;
@@ -36,7 +42,7 @@ export type User = {
   hobbies: string[];
   address: UserAddress;
   // orders?: UserOrders;
-  orders: UserOrders;
+  orders?: UserOrderItem[];
 };
 
 export type UserMethods = {
