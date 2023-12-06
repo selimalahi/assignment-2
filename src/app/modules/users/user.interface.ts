@@ -12,7 +12,7 @@ export type UserAddress = {
   country: string;
 };
 
-export type UserOrderItem = {
+export type UserOrders = {
   productName: string;
   price: number;
   quantity: number;
@@ -28,7 +28,7 @@ export type User = {
   isActive: boolean;
   hobbies: string[];
   address: UserAddress;  
-  orders?: UserOrderItem[];
+  orders?: UserOrders[];
 };
 
 export type UserMethods = {

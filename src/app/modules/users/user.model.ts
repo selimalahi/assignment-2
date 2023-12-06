@@ -14,11 +14,11 @@ const userAddressSchema = new Schema<UserAddress>({
   country: { type: String },
 });
 
-const userOrderSchema = new Schema<UserOrders>([{
+const userOrderSchema = new Schema<UserOrders>({
   productName: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-}]);
+});
 
 const userSchema = new Schema<User, UserModels, UserMethods>({
   userId: {
@@ -66,5 +66,11 @@ userSchema.methods.isUserExists = async function(userId: number){
   const existingUser = await UserModel.findOne({userId})
   return existingUser;
 };
+
+
+// userSchema.statics.isExistsUser = async function(userId: number) {
+//   const userExisting = await this.findOne({ userId });
+//   return userExisting;
+// };
 
 export const UserModel = model<User, UserModels>('User', userSchema);

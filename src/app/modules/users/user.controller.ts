@@ -69,7 +69,7 @@ const updateUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const numericUserId = parseInt(userId, 10);
      const validatedData = userValidationSchema.parse(userData);
-    const result = await UserServices.updateuser(numericUserId, validatedData);
+    const result = await UserServices.updateUser(numericUserId, validatedData);
     res.status(200).json({
       status: 'success',
       message: 'User updated successfully',

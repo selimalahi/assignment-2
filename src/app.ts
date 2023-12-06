@@ -11,7 +11,7 @@ app.use('/api/users', UserRouters);
 
 app.get('/', (req: Request, res: Response) => {
   
-  res.send("Hello World");
+  res.send("level-2 assingment project");
   
 });
 

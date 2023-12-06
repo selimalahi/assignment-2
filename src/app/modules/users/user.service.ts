@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-catch */
+import config from '../../config';
 import { User } from './user.interface';
 import { UserModel } from './user.model';
+import bcrypt from 'bcrypt';
 
 const createStudentIntoDB = async (user: User) => {
   const result = await UserModel.create(user);
@@ -36,21 +40,33 @@ const getSingleUsersFromDB = async (userId: number) => {
 
   const result = await UserModel.findOne(
     { userId },
-    { username: 1, fullName: 1, age: 1, email: 1, address: 1, orders: 1 },
+    { userId: 1, username: 1, fullName: 1, age: 1, email: 1, address: 1 },
   );
   return result;
 };
 
-const updateuser = async (userId: number, userData: User) => {
+const updateUser = async (userId: number, userData: User) => {
   const user = new UserModel();
   if (!(await user.isUserExists(userId))) {
     throw new Error('User not found');
+  }
+  if (userData.password) {
+    userData.password = await bcrypt.hash(
+      userData.password,
+      Number(config.bcrypt_salt_rounds),
+    );
   }
 
   const result = await UserModel.findOneAndUpdate({ userId }, userData, {
     new: true,
     runValidators: true,
   });
+
+  if (result) {
+    const { password, ...resultWithoutPassword } = result.toObject();
+    return resultWithoutPassword;
+  }
+
   return result;
 };
 
@@ -95,18 +111,16 @@ export const getUserOrders = async (userId: number) => {
     const user = await UserModel.findOne({ userId });
     if (user) {
       const existingUser = await user.isUserExists(userId);
-
       if (existingUser) {
-        const orders = existingUser.orders;      
+        const orders = existingUser.orders;
 
-        if(orders && orders.length > 0){
+        if (orders && orders.length > 0) {
           return orders;
-        }else{
+        } else {
           return [];
         }
       }
-    }    
-    else {
+    } else {
       const error = new Error('User not found');
       (error as any).code = 404;
       throw error;
@@ -116,28 +130,28 @@ export const getUserOrders = async (userId: number) => {
   }
 };
 
-
-
 const getToatalPriceOforders = async (userId: number) => {
-  try{
+  try {
     const user = await UserModel.findOne({ userId });
-   
-  if (user) {
-    const existingUser = await user.isUserExists(userId);
-    if (existingUser) {      
-      const TotalPrice =
-        existingUser.orders?.reduce(
-          (sum, order) => sum + order.price * order.quantity,
-          0,
-        ) || 0;
-      return TotalPrice;
+
+    if (user) {
+      const existingUser = await user.isUserExists(userId);
+      if (existingUser) {
+        const totalPrice =
+          existingUser.orders?.reduce(
+            (sum, order) => sum + order.price * order.quantity,
+            0,
+          ) || 0;
+
+        const totalPrice2 = parseFloat(totalPrice.toFixed(2));
+        return totalPrice2;
+      }
+    } else {
+      const error = new Error('User not found');
+      (error as any).code = 404;
+      throw error;
     }
-  }else {
-    const error = new Error('User not found');
-    (error as any).code = 404;
-    throw error;
-  }
-  }catch(error){
+  } catch (error) {
     throw new Error('User Not Found');
   }
 };
@@ -146,7 +160,7 @@ export const UserServices = {
   createStudentIntoDB,
   getAllUsersFromDB,
   getSingleUsersFromDB,
-  updateuser,
+  updateUser,
   deleteUser,
   addProductToOrder,
   getUserOrders,
