@@ -1,11 +1,9 @@
 import { z } from 'zod';
 
-
 const userFullNameValidationSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
 });
-
 
 const userAddressValidationSchema = z.object({
   street: z.string(),
@@ -19,8 +17,18 @@ const userOrderItemValidationSchema = z.object({
 });
 
 const userValidationSchema = z.object({
-  userId: z.number().int(),
-  username: z.string().min(1),
+  userId: z
+    .number({
+      required_error: 'userId is required',
+      invalid_type_error: 'userId must be a number',
+    })
+    .int(),
+  username: z
+    .string({
+      required_error: 'username is required',
+      invalid_type_error: 'username must be a string',
+    })
+    .min(1),
   password: z.string(),
   fullName: userFullNameValidationSchema,
   age: z.number(),
@@ -32,24 +40,3 @@ const userValidationSchema = z.object({
 });
 
 export default userValidationSchema;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

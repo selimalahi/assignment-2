@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
-import { User, UserAddress, UserFullName, UserMethods, UserModels, UserOrders } from './user.interface';
+import {
+  User,
+  UserAddress,
+  UserFullName,
+  UserMethods,
+  UserModels,
+  UserOrders,
+} from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 const userFullnameSchema = new Schema<UserFullName>({
@@ -22,16 +29,16 @@ const userOrderSchema = new Schema<UserOrders>({
 
 const userSchema = new Schema<User, UserModels, UserMethods>({
   userId: {
-    type: Number,
+    type: Number,    
+    required: [true, 'User Id is requried'],
     unique: true,
-    required: true,
   },
   username: {
     type: String,
-    unique: true,
-    required: true,
+    required: [true, 'User Id is requried'],
+    unique: true,    
   },
-  password: { type: String, required: true },
+  password: { type: String,  required: [true, 'User Id is requried'], },
   fullName: {
     type: userFullnameSchema,
   },
@@ -43,29 +50,31 @@ const userSchema = new Schema<User, UserModels, UserMethods>({
     type: userAddressSchema,
     required: true,
   },
-  orders:{
-    type:[ userOrderSchema],
+  orders: {
+    type: [userOrderSchema],
     
   },
 });
 
-
 userSchema.pre('save', async function (next) {
   const user = this;
-  user.password = await bcrypt.hash(user.password,Number(config.bcrypt_salt_rounds));
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
   next();
-    
-})
+});
 userSchema.post('save', function (doc, next) {
-  doc.password= ''
+  doc.password = '';
   next();
-})
+});
 
-// custom inastance method 
-userSchema.methods.isUserExists = async function(userId: number){
-  const existingUser = await UserModel.findOne({userId})
+// custom inastance method
+userSchema.methods.isUserExists = async function (userId: number) {
+  const existingUser = await UserModel.findOne({ userId });
   return existingUser;
 };
+
 
 
 // userSchema.statics.isExistsUser = async function(userId: number) {

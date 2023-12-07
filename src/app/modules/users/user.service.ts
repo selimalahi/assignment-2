@@ -12,6 +12,7 @@ const createStudentIntoDB = async (user: User) => {
   const result2 = await UserModel.findOne(
     { userId: result.userId },
     {
+      userId: 1,
       username: 1,
       fullName: 1,
       age: 1,
@@ -40,12 +41,21 @@ const getSingleUsersFromDB = async (userId: number) => {
 
   const result = await UserModel.findOne(
     { userId },
-    { userId: 1, username: 1, fullName: 1, age: 1, email: 1, address: 1 },
+    {
+      userId: 1,
+      username: 1,
+      fullName: 1,
+      age: 1,
+      email: 1,
+      isActive: 1,
+      hobbies: 1,
+      address: 1,
+    },
   );
   return result;
 };
 
-const updateUser = async (userId: number, userData: User) => {
+const updateUser = async (userId: number, userData: Partial<User>) => {
   const user = new UserModel();
   if (!(await user.isUserExists(userId))) {
     throw new Error('User not found');

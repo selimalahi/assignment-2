@@ -12,6 +12,6 @@ app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use('/api/users', user_route_1.UserRouters);
 app.get('/', (req, res) => {
-    res.send("level-2 assingment project");
+    res.send("level-2 assingment project updated");
 });
 exports.default = app;
