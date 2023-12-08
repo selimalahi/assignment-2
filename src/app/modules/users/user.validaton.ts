@@ -10,7 +10,7 @@ const userAddressValidationSchema = z.object({
   city: z.string(),
   country: z.string(),
 });
-const userOrderItemValidationSchema = z.object({
+export const userOrderItemValidationSchema = z.object({
   productName: z.string(),
   price: z.number(),
   quantity: z.number(),
@@ -38,5 +38,32 @@ const userValidationSchema = z.object({
   address: userAddressValidationSchema,
   orders: z.array(userOrderItemValidationSchema).optional(),
 });
+
+
+// update user data 
+
+export const updateUserValidationSchema = z.object({
+  userId: z
+    .number({
+      required_error: 'userId is required',
+      invalid_type_error: 'userId must be a number',
+    })
+    .int().optional(),
+  username: z
+    .string({
+      required_error: 'username is required',
+      invalid_type_error: 'username must be a string',
+    })
+    .min(1).optional(),
+  password: z.string().optional(),
+  fullName: userFullNameValidationSchema.optional(),
+  age: z.number().optional(),
+  email: z.string().email().optional(),
+  isActive: z.boolean().optional(),
+  hobbies: z.array(z.string()).optional(),
+  address: userAddressValidationSchema.optional(),
+  // orders: z.array(userOrderItemValidationSchema).optional(),
+});
+
 
 export default userValidationSchema;

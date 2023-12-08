@@ -8,6 +8,15 @@ import { UserModel } from './user.model';
 import bcrypt from 'bcrypt';
 
 const createStudentIntoDB = async (user: User) => {
+  const id = user.userId;
+  const currentUser = await UserModel.findOne({userId: id });  
+  
+  if(currentUser){   
+    throw new Error('User already exits'); 
+  
+  }
+ 
+
   const result = await UserModel.create(user);
   const result2 = await UserModel.findOne(
     { userId: result.userId },
@@ -28,7 +37,7 @@ const createStudentIntoDB = async (user: User) => {
 const getAllUsersFromDB = async () => {
   const result = await UserModel.find(
     {},
-    { username: 1, fullName: 1, age: 1, email: 1, address: 1 },
+    { _id: 0, username: 1, fullName: 1, age: 1, email: 1, address: 1 },
   );
   return result;
 };
@@ -42,6 +51,7 @@ const getSingleUsersFromDB = async (userId: number) => {
   const result = await UserModel.findOne(
     { userId },
     {
+      _id: 0,
       userId: 1,
       username: 1,
       fullName: 1,
@@ -66,14 +76,13 @@ const updateUser = async (userId: number, userData: Partial<User>) => {
       Number(config.bcrypt_salt_rounds),
     );
   }
-
   const result = await UserModel.findOneAndUpdate({ userId }, userData, {
     new: true,
     runValidators: true,
   });
 
   if (result) {
-    const { password, ...resultWithoutPassword } = result.toObject();
+    const { password,_id, ...resultWithoutPassword } = result.toObject();
     return resultWithoutPassword;
   }
 
@@ -95,7 +104,6 @@ const addProductToOrder = async (
 ) => {
   try {
     const user = await UserModel.findOne({ userId });
-
     if (!user) {
       throw new Error('User not found');
     }

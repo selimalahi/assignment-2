@@ -5,7 +5,7 @@
 
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
-import userValidationSchema from './user.validaton';
+import userValidationSchema, { updateUserValidationSchema, userOrderItemValidationSchema } from './user.validaton';
 
 
 
@@ -20,10 +20,10 @@ const createUser = async (req: Request, res: Response) => {
       message: 'User is created successfully',
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'something went wrong',
+      message: err.message || 'something went wrong',
       error: err,
     });
   }
@@ -74,10 +74,10 @@ const updateUser = async (req: Request, res: Response) => {
     const userData = req.body;
     const { userId } = req.params;
     const numericUserId = parseInt(userId, 10);
-    const zodValidatedData = userValidationSchema.parse(userData);
+    const updateUodValidatedData = updateUserValidationSchema.parse(userData);
     const result = await UserServices.updateUser(
       numericUserId,
-      zodValidatedData,
+      updateUodValidatedData,
     );
     res.status(200).json({
       status: 'success',
@@ -87,10 +87,10 @@ const updateUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Failed to Update User Data',
+      message: 'User not found!',
       error: {
         code: 404,
-        description: 'User not found!',
+        description:'User not found!',
       },
     });
   }
@@ -123,9 +123,8 @@ const addProductToOrder = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const numericUserId = parseInt(userId, 10);
     const orderData = req.body;
-
-    await UserServices.addProductToOrder(numericUserId, orderData);
-
+    const zodValidatedData = userOrderItemValidationSchema.parse(orderData);
+    const result = await UserServices.addProductToOrder(numericUserId, zodValidatedData);
     res.status(200).json({
       success: true,
       message: 'Order created successfully!',
