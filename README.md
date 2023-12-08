@@ -11,6 +11,8 @@
 --- API Endpoints
 --- Validation
 --- Built With
+--- Envirment Variable
+--- Run the Application
 
 
 ## Project Overview
@@ -79,5 +81,11 @@ GET /api/users/:userId/orders/total-price
    -- TypeScript
     -- MongoDB (Mongoose)
      -- Zod
+## Envirment Variable
+PORT=5000
+DATABASE_URL=mongodb+srv://admin-pro:ugmRgstdRRj7CMj3@cluster0.ykdu8fg.mongodb.net/assingment-project?retryWrites=true&w=majority
+BCRYPT_SALT_ROUNDS=12
 
+## Run the Application
+  npm run start:dev
 
